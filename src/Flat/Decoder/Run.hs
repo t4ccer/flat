@@ -1,4 +1,4 @@
-module Flat.Decoder.Run(strictDecoder,listTDecoder) where
+module Flat.Decoder.Run(strictDecoder) where
 
 import Foreign ( Ptr, plusPtr, withForeignPtr )
 import qualified Data.ByteString          as B
@@ -44,18 +44,18 @@ strictDecoder_ get (BS.PS base off len) check =
 --       return (a, BS.PS base (ptr' `minusPtr` base0) (endPtr `minusPtr` ptr'), o')
 
 
-listTDecoder :: Get a -> BS.ByteString -> IO (ListT IO a)
-listTDecoder get (BS.PS base off len) = 
-    withForeignPtr base $ \base0 -> do
-        let ptr = base0 `plusPtr` off
-            endPtr = ptr `plusPtr` len
-            s = S ptr 0
-            go s = do
-                GetResult s' b <- runGet dBool endPtr s
-                if b
-                    then do
-                        GetResult s'' a <- runGet get endPtr s'
-                        return $ Just (a, ListT $ go s'')
-                    else return Nothing
-        return $ ListT (go s)
+-- listTDecoder :: Get a -> BS.ByteString -> IO (ListT IO a)
+-- listTDecoder get (BS.PS base off len) = 
+--     withForeignPtr base $ \base0 -> do
+--         let ptr = base0 `plusPtr` off
+--             endPtr = ptr `plusPtr` len
+--             s = S ptr 0
+--             go s = do
+--                 GetResult s' b <- runGet dBool endPtr s
+--                 if b
+--                     then do
+--                         GetResult s'' a <- runGet get endPtr s'
+--                         return $ Just (a, ListT $ go s'')
+--                     else return Nothing
+--         return $ ListT (go s)
 

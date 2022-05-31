@@ -2,7 +2,6 @@
 -- |Strict Decoder
 module Flat.Decoder (
     strictDecoder,
-    listTDecoder,
     Decoded,
     DecodeException(..),
     Get,
